@@ -47,7 +47,11 @@ module.exports = {
   async execute(sock, message, args, extra) {
     const parsed = parseToggle(args.join(' ').trim());
     const globalSettings = database.getGlobalSettingsSync();
-    const currentState = globalSettings.anticall || false;
+    const sessionSettings = sock._customConfig?.settings || {};
+    const sessionId = sock._customConfig?.sessionId;
+    const currentState = sessionSettings.anticall !== undefined
+      ? sessionSettings.anticall
+      : (globalSettings.anticall || false);
 
     const navBtns = [
       btn('ownermenu', '👑 Owner Menu'),
@@ -74,7 +78,13 @@ module.exports = {
       }, { quoted: message });
     }
 
-    await database.updateGlobalSettings({ anticall: parsed.value });
+    if (sessionId) {
+      if (!sock._customConfig.settings) sock._customConfig.settings = {};
+      sock._customConfig.settings.anticall = parsed.value;
+      await database.updateSessionSettings(sessionId, { anticall: parsed.value });
+    } else {
+      await database.updateGlobalSettings({ anticall: parsed.value });
+    }
     const newState = parsed.value;
     return sendBtn(sock, extra.from, {
       text:

@@ -15,7 +15,7 @@ async function updateSetting(sock, key, value) {
 
 module.exports = {
   name: 'antiviewonce',
-  aliases: ['antivo', 'viewonceguard'],
+  aliases: ['antivo', 'antivv', 'viewonceguard'],
   description: 'Toggle anti-viewonce — intercepts view-once media and saves it to owner chat',
   usage: '.antiviewonce [on/off/emoji <emoji>]',
   category: 'owner',

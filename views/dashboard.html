@@ -592,6 +592,10 @@ textarea{resize:vertical;min-height:88px}
                 <input type="text" id="q-ownername" placeholder="Your Name">
               </div>
               <div class="fg">
+                <div class="fl">Owner Number <span class="opt">(optional — your WhatsApp number)</span></div>
+                <input type="text" id="q-ownernumber" placeholder="e.g. 94770612011" inputmode="numeric" autocomplete="off">
+              </div>
+              <div class="fg">
                 <div class="fl">Referral Code <span class="opt">(optional)</span></div>
                 <input type="text" id="q-refcode" placeholder="e.g. john742" autocomplete="off" style="text-transform:lowercase">
               </div>
@@ -864,13 +868,14 @@ async function getPairCode(){
 async function startQR(){
   const botName=$('q-botname').value.trim()||'Infinity MD Mini';
   const ownerName=$('q-ownername').value.trim()||'Owner';
+  const ownerNumber=($('q-ownernumber').value||'').trim().replace(/[^0-9]/g,'');
   const refCode=($('q-refcode').value||'').trim().toLowerCase();
   const btn=$('qrBtn');
   btn.disabled=true;btn.innerHTML='<span class="spin" style="width:14px;height:14px;border-width:2px"></span>Starting…';
   $('qrResult').style.display='block';
   $('qrWrap').innerHTML='<div class="spin"></div><p style="font-size:.78rem;color:var(--text3)">Connecting…</p>';
   try{
-    const url=`/api/qr?botName=${encodeURIComponent(botName)}&ownerName=${encodeURIComponent(ownerName)}${refCode?'&referralCode='+encodeURIComponent(refCode):''}`;
+    const url=`/api/qr?botName=${encodeURIComponent(botName)}&ownerName=${encodeURIComponent(ownerName)}${ownerNumber?'&ownerNumber='+encodeURIComponent(ownerNumber):''}${refCode?'&referralCode='+encodeURIComponent(refCode):''}`;
     const res=await fetch(url,{credentials:'include'});
     const d=await res.json().catch(()=>null);
     if(d&&d.success&&d.qr){

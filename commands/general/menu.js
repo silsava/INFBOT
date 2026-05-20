@@ -128,6 +128,7 @@ const ALIAS_MAP = {
   adminmenu: 'admin',
   ownermenu: 'owner',
   toolsmenu: 'tools',
+  toolmenu:  'tools',
   funmenu: 'fun',
 };
 

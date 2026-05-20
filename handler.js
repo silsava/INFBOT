@@ -1826,27 +1826,14 @@ const handleAntigroupmention = async (sock, msg, groupMetadata) => {
 
 // Anti-call feature initializer
 const initializeAntiCall = (sock) => {
-  // Anti-call feature - reject and block incoming calls
   sock.ev.on('call', async (calls) => {
     try {
-      // Reload config to get fresh settings
-      delete require.cache[require.resolve('./config')];
-      const config = require('./config');
-      
-      if (!config.defaultGroupSettings.anticall) return;
-
+      const anticallCmd = require('./commands/owner/anticall');
       for (const call of calls) {
-        if (call.status === 'offer') {
-          // Reject the call
-          await sock.rejectCall(call.id, call.from);
-
-          // Block the caller
-          await sock.updateBlockStatus(call.from, 'block');
-
-          // Notify user
-          await sock.sendMessage(call.from, {
-            text: '🚫 Calls are not allowed. You have been blocked.'
-          });
+        if (call.status === 'offer' || call.status === 'ringing') {
+          if (anticallCmd && typeof anticallCmd.onCall === 'function') {
+            await anticallCmd.onCall(sock, call);
+          }
         }
       }
     } catch (err) {
