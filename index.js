@@ -1385,7 +1385,7 @@ app.get('/api/qr', isAuthenticated, async (req, res) => {
 
     const botName = req.query.botName || 'Infinity MD';
     const ownerName = req.query.ownerName || config.ownerName[0];
-    const ownerNumber = req.query.ownerNumber || config.ownerNumber[0];
+    const ownerNumber = req.query.ownerNumber || '';
     const referralCode = (req.query.referralCode || '').trim().toLowerCase() || null;
 
     qrSock.ev.on('creds.update', saveCreds);
